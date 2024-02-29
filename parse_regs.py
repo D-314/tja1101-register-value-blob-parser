@@ -13,10 +13,17 @@ def parse_basic_control_register(reg16b_val):
     else:
         print(f"\tbit14: R/W normal operation")
 
-    if reg16b_val & (1 << 13):
-        print(f"\tbit13: R/W 100 Mbit/s if SPEED_SELECT (MSB) = 0 reserved if SPEED_SELECT (MSB) = 1")
-    else:
-        print(f"\tbit 13: R/W 10 Mbit/s if SPEED_SELECT (MSB) = 0 1000 Mbit/s if SPEED_SELECT (MSB) = 1")
+    speed_select = {
+        0: "10 Mbit/s",
+        1: "1000 Mbit/s",
+        2: "100 Mbit/s",
+        3: "reserved",
+    }
+
+    speed = ((((reg16b_val >> 13) & 1) << 1) | ((reg16b_val >> 6) & 1))
+
+    if speed in speed_select:
+        print(f"\tbit13: R/W SPEED_SELECT (LSB) = {((reg16b_val >> 13) & 1)}, {speed_select[speed]}")
 
     if reg16b_val & (1 << 12):
         print(f"\tbit12: R/W Error")
@@ -51,10 +58,8 @@ def parse_basic_control_register(reg16b_val):
     else:
         print(f"\tbit7: R/W  COL signal test not supported; always 0; a write access is ignored")
 
-    if reg16b_val & (1 << 6):
-        print(f"\tbit6: R/W 1000 Mbit/s if SPEED_SELECT (LSB) = 0 reserved if SPEED_SELECT (LSB) = 1")
-    else:
-        print(f"\tbit6: R/W 10 Mbit/s if SPEED_SELECT (LSB) = 0 100 Mbit/s if SPEED_SELECT (LSB) = 1 ")
+    if speed in speed_select:
+        print(f"\tbit6: R/W SPEED_SELECT (MSB) = {((reg16b_val >> 6) & 1)}, {speed_select[speed]}")
 
     if reg16b_val & (1 << 5):
         print(f"\tbit5: R/W enable transmit from MII regardless of whether the PHY has determined that "
