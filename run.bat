@@ -1,3 +1,3 @@
-reg_paraser.exe tja1101_reg_blob.txt tja1101_confuguration.txt
+python parse_regs.py in_tja1101_reg_map_blob.txt
 pause
 
